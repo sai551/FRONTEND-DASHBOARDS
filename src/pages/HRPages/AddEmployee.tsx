@@ -1,11 +1,10 @@
 
 
-import { Api_EndPoints } from "@/Config/Api_Endpoints";
 import api from "@/lib/axios";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-function RegisterEmployee() {
+function AddEmployee() {
   const initialFormState = {
     firstName: "",
     lastName: "",
@@ -74,79 +73,60 @@ function RegisterEmployee() {
     return { headers: { Authorization: `Bearer ${token}` } };
   };
 
-  // const fetchEmployees = async () => {
-  //   try {
-  //     const res = await axios.get(Api_EndPoints.EMPLOYEES_API, getAuthHeaders());
-  //     setEmployees(res.data);
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
   const fetchEmployees = async () => {
     try {
-      const res = await axios.get(Api_EndPoints.EMPLOYEES_API, getAuthHeaders());
-
-      // Ensure employees is always an array
-      const data = Array.isArray(res.data)
-        ? res.data
-        : Array.isArray(res.data.data)
-          ? res.data.data
-          : [];
-
-      setEmployees(data);
+      const res = await api.get("/employees", getAuthHeaders());
+      setEmployees(res.data);
     } catch (err) {
-      console.error("Error fetching employees:", err);
-      setEmployees([]); // fallback to empty array
+      console.error(err);
     }
   };
-
 
   useEffect(() => {
     fetchEmployees();
 
     axios
-      .get(Api_EndPoints.ROLES_API, getAuthHeaders())
+      .get("http://localhost:3000/roles/get_Roles", getAuthHeaders())
       .then((res) => setRoles(res.data.map((r: any) => ({ id: r.roleId, name: r.name }))))
       .catch(() => setRoles([{ id: 1, name: "Default Role" }]));
 
     axios
-      .get(Api_EndPoints.DEPARTMENTS_API, getAuthHeaders())
+      .get("http://localhost:3000/department/get_dept", getAuthHeaders())
       .then((res) => setDepartments(res.data.map((d: any) => ({ id: d.departmentId, name: d.name }))))
       .catch(() => setDepartments([{ id: 1, name: "Default Dept" }]));
 
     axios
-      .get(Api_EndPoints.DESIGNATION_API, getAuthHeaders())
+      .get("http://localhost:3000/designation/getDesg", getAuthHeaders())
       .then((res) => setDesignations(res.data.map((desg: any) => ({ id: desg.designationId, title: desg.title }))))
       .catch(() => setDesignations([{ id: 1, title: "Employee" }]));
 
     axios
-      .get(Api_EndPoints.BRANCHES_API, getAuthHeaders())
+      .get("http://localhost:3000/branches/getAllBranches", getAuthHeaders())
       .then((res) => setBranches(res.data.map((b: any) => ({ id: b.branchId, name: b.name }))))
       .catch(() => setBranches([{ id: 1, name: "Main Branch" }]));
 
     axios
-      .get(Api_EndPoints.EMPLOYEMENTTYPES_API, getAuthHeaders())
+      .get("http://localhost:3000/enums/employment_type", getAuthHeaders())
       .then((res) => setEmploymentTypes(res.data))
       .catch(() => setEmploymentTypes([{ id: 1, name: "Full-time" }]));
 
     axios
-      .get(Api_EndPoints.WORKSHIFT_API, getAuthHeaders())
+      .get("http://localhost:3000/enums/work_shift", getAuthHeaders())
       .then((res) => setWorkshifts(res.data))
       .catch(() => setWorkshifts([{ id: 1, name: "Morning" }]));
 
     axios
-      .get(Api_EndPoints.MARRIAGESTATUS_API, getAuthHeaders())
+      .get("http://localhost:3000/enums/marriageStatus", getAuthHeaders())
       .then((res) => setmarritalStatus(res.data))
       .catch(() => setmarritalStatus([{ id: 1, name: "Unmarried" }]));
 
     axios
-      .get(Api_EndPoints.BLOODGROUP_API, getAuthHeaders())
+      .get("http://localhost:3000/enums/blood_group", getAuthHeaders())
       .then((res) => setbloodGroups(res.data))
       .catch(() => setbloodGroups([{ id: 1, name: "O+" }]));
 
     axios
-      .get(Api_EndPoints.GENDER_API, getAuthHeaders())
+      .get("http://localhost:3000/enums/gender", getAuthHeaders())
       .then((res) => setgenders(res.data))
       .catch(() => setgenders([{ id: 1, name: "Male" }]));
   }, []);
@@ -157,7 +137,7 @@ function RegisterEmployee() {
       return alert("Please fill all required fields!");
     }
     try {
-      await axios.post(Api_EndPoints.CREATEEMPLOYEE_API, form, getAuthHeaders());
+      await api.post("/employees/createEmp", form, getAuthHeaders());
       resetForm();
       fetchEmployees();
     } catch (err) {
@@ -165,27 +145,11 @@ function RegisterEmployee() {
     }
   };
 
-  // const handleUpdateEmployee = async (e: any) => {
-  //   e.preventDefault();
-  //   if (!selectedEmployee) return;
-  //   try {
-  //     await api.put(`/employees/${selectedEmployee.id}`, form, getAuthHeaders());
-  //     resetForm();
-  //     fetchEmployees();
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
-
-
   const handleUpdateEmployee = async (e: any) => {
     e.preventDefault();
     if (!selectedEmployee) return;
     try {
-      await axios.put(`${Api_EndPoints.UPDATEEMPLOYEE_API}/${selectedEmployee.id}`,
-        form,
-        getAuthHeaders()
-      );
+      await api.put(`/employees/${selectedEmployee.id}`, form, getAuthHeaders());
       resetForm();
       fetchEmployees();
     } catch (err) {
@@ -196,7 +160,7 @@ function RegisterEmployee() {
   const handleDelete = async (id: number) => {
     if (!window.confirm("Are you sure you want to delete this employee?")) return;
     try {
-      await axios.delete(`${Api_EndPoints.DELETEEMPLOYEE_API}/${id}`, getAuthHeaders());
+      await api.delete(`/employees/${id}`, getAuthHeaders());
       fetchEmployees();
     } catch (err) {
       console.error(err);
@@ -326,13 +290,13 @@ function RegisterEmployee() {
           <option value="">Select {fieldLabels[key]}</option>
           {(key === "role" ? roles :
             key === "department" ? departments :
-              key === "designation" ? designations :
-                key === "branch" ? branches :
-                  key === "employmentType" ? employmentTypes :
-                    key === "workshift" ? workshifts :
-                      key === "marrital_status" ? marritalStatus :
-                        key === "bloodGroup" ? bloodGroups :
-                          genders
+            key === "designation" ? designations :
+            key === "branch" ? branches :
+            key === "employmentType" ? employmentTypes :
+            key === "workshift" ? workshifts :
+            key === "marrital_status" ? marritalStatus :
+            key === "bloodGroup" ? bloodGroups :
+            genders
           ).map((item: any) => (
             <option key={item.id} value={item.name || item.title}>
               {item.name || item.title}
@@ -352,7 +316,7 @@ function RegisterEmployee() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto mt-3 font-sans" >
+    <div className="max-w-6xl mx-auto mt-3 font-sans">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Employees</h1>
 
       {/* Form */}
@@ -459,4 +423,4 @@ function RegisterEmployee() {
   );
 }
 
-export default RegisterEmployee;
+export default AddEmployee;
