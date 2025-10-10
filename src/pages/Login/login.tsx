@@ -13,8 +13,9 @@ export const Roles = {
   OperationsManager: "Operations Manager",
   Employee: "Employee",
   TeamLead: "Team Lead",
-  Intern: "Intern"
-
+  Intern: "Intern",
+  Trainer: "Trainer",
+  Trainee: "Trainee"
 };
 
 export const roleRoutes: Record<string, string> = {
