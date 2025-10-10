@@ -130,6 +130,46 @@ import ResetPassword from "./pages/Login/resetPassword";
 import EditProfile from "./pages/ceo/EditProfile";
 import MyProfilePage from "./pages/ceo/MyProfilePage";
 import Employee from "./pages/ceo/Employee";
+// Trainee Dashboard
+import TraineeDashboard from "./components/Trainne/Layout/Dashboard";
+import TraineeAssignments from "./pages/Trainne/Assignments";
+import Evaluation from "./pages/Trainne/Evaluation";
+import TraineeDocuments from "./pages/Trainne/Documents";
+import ProjectStatus from "./pages/Trainne/ProjectStatus";
+import TraineeAttendance from "./pages/Trainne/Attendance";
+import TraineeMessages from "./pages/Trainne/Messages";
+import { TraineeDashboardLayout } from "./components/Trainne/Layout/Layout";
+import TraineeProfile from "./pages/Trainne/Profile";
+import TraineeSettings from "./pages/Trainne/Settings";
+
+// Trainer routes
+import { TrainerLayout } from "./components/Trainer/Layout/Layout";
+import TrainerDashboard from "./components/Trainer/Layout/Dashboard";
+import TrainingSessions from "./pages/Trainer/Sessions";
+import TraineeManagement from "./pages/Trainer/Trainees";
+import AttendanceTracking from "./pages/Trainer/Attendance";
+import FeedbackEvaluation from "./pages/Trainer/Feedback";
+import CourseManagement from "./pages/Trainer/Courses";
+import CalendarScheduling from "./pages/Trainer/Calendar";
+import ReportsInsights from "./pages/Trainer/Reports";
+import Communications from "./pages/Trainer/Communications";
+import TrainerProfile from "./pages/Trainer/Profile";
+import TrainerSettings from "./pages/Trainer/Settings";
+
+
+// Project Manager routes
+import {ProjectManagerLayout} from "./components/ProjectManager/Layout/Layout";
+import ProjectManagerDashboard from "./components/ProjectManager/Layout/Dashboard";
+import ProjectsM from "./pages/ProjectManager/Projects";
+import NewProject from "./pages/ProjectManager/NewProject";
+import ProjeectTasks from "./pages/ProjectManager/Tasks";
+import ProjectPerformance from "./pages/ProjectManager/Performance";
+import BudgetFinance from "./pages/ProjectManager/BudgetFinance";
+import ProjectReports from "./pages/ProjectManager/Reports";
+import EventsMeetings from "./pages/ProjectManager/EventsMeeting";
+import Risk from "./pages/ProjectManager/Risk";
+import ProjectProfile from "./pages/ProjectManager/Profile";
+import ProjectSettings from "./pages/ProjectManager/Settings";
 import { HRDashboardLayout } from "./components/HRDashboard/Layout/Layout";
 import HRDashboard from "./components/HRDashboard/Layout/Dashboard";
 import CompanyPerformance from "./pages/HRPages/CompanyPerformance";
@@ -153,7 +193,9 @@ export default function App() {
         <Sonner />
         <BrowserRouter>
           <Routes>
-            {/* Public Routes */}
+
+
+                    {/* Public Routes */}
             <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
@@ -161,7 +203,9 @@ export default function App() {
             <Route path="/otp-verification" element={<OtpVerification />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* CEO Routes */}
+
+
+                           {/* CEO Routes */}
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.CEO]}>
@@ -184,8 +228,10 @@ export default function App() {
             </Route>
 
 
+             
 
-            {/* Branch Manager Routes */}
+
+            {/* Branch Manager Routes */} 
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.BranchManager]}>
@@ -201,7 +247,9 @@ export default function App() {
               <Route path="/financials" element={<BranchFinancials />} />
               <Route path="/settings" element={<Settings />} />
             </Route>
-            {/* Director Routes */}
+
+
+                       {/* Director Routes */}
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.Director]}>
@@ -221,6 +269,9 @@ export default function App() {
               <Route path="/director-settings" element={<DirectorSettings />} />
             </Route>
 
+
+
+           
             {/* HRManager Routes */}
             <Route
               element={
@@ -282,7 +333,9 @@ export default function App() {
               <Route path="/profilePage" element={<ProfilePage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
-            {/* Protected Dashboard routes */}
+
+
+                       {/* employee routes */}
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.Employee]}>
@@ -309,7 +362,8 @@ export default function App() {
               <Route path="/emp/feedback" element={<Feedback />} />
               <Route path="/emp/settings" element={<EmpSettings />} />
             </Route>
-            {/* InternDashboard routes with layout */}
+
+                   {/* InternDashboard routes with layout */}
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.Intern]}>
@@ -361,7 +415,9 @@ export default function App() {
               <Route path="/teamlead/reports" element={<TeamReports />} />
               <Route path="/teamlead/settings" element={<TeamSettings />} />
             </Route>
-            {/* General Manager Dashboard */}
+
+
+                        {/* General Manager Dashboard */}
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.GeneralManager]}>
@@ -380,7 +436,9 @@ export default function App() {
               <Route path="announcements" element={<GmAnnouncements />} />
               <Route path="settings" element={<GmSettings />} />
             </Route>
-            // Operations Manager Dashboard
+              
+              
+                  {/* Operations Manager Dashboard */}
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.OperationsManager]}>
@@ -410,6 +468,91 @@ export default function App() {
                 element={<OmTransportSchedules />}
               />
             </Route>
+
+
+
+                          {/* Trainee Dashboard */}   
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={[Roles.Trainee]}>
+                  <TraineeDashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/traineedashboard" element={<TraineeDashboard />} />
+              <Route
+                path="/trainee/assignments"
+                element={<TraineeAssignments />}
+              />
+              <Route path="/trainee/evaluation" element={<Evaluation />} />
+              <Route path="/trainee/documents" element={<TraineeDocuments />} />
+              <Route
+                path="/trainee/projectstatus"
+                element={<ProjectStatus />}
+              />
+              <Route
+                path="/trainee/attendance"
+                element={<TraineeAttendance />}
+              />
+              <Route path="/trainee/leave" element={<Leave />} />
+              <Route path="/trainee/exportdata" element={<ExportData />} />
+              <Route path="/trainee/profile" element={<TraineeProfile />} />
+              <Route path="/trainee/reports" element={<Reports />} />
+              <Route path="/trainee/messages" element={<TraineeMessages />} />
+              <Route path="/trainee/settings" element={<TraineeSettings />} />
+            </Route>
+
+
+
+                                {/* Trainer routes */}
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={[Roles.Trainer]}>
+                  <TrainerLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<TrainerDashboard />} />
+              <Route path="/trainer/dashboard" element={<TrainerDashboard />} />
+              <Route path="/trainer/sessions" element={<TrainingSessions />} />
+              <Route path="/trainer/trainees" element={<TraineeManagement />} />
+              <Route
+                path="/trainer/attendance"
+                element={<AttendanceTracking />}
+              />
+              <Route
+                path="/trainer/feedback"
+                element={<FeedbackEvaluation />}
+              />
+              <Route path="/trainer/courses" element={<CourseManagement />} />
+              <Route
+                path="/trainer/calendar"
+                element={<CalendarScheduling />}
+              />
+              <Route path="/trainer/reports" element={<ReportsInsights />} />
+              <Route
+                path="/trainer/communications"
+                element={<Communications />}
+              />
+              <Route path="/trainer/profile" element={<TrainerProfile />} />
+              <Route path="/trainer/settings" element={<TrainerSettings />} />
+            </Route>
+
+              {/* Project Manager Routes */}
+          <Route element={<ProjectManagerLayout />}>
+            <Route path="/projectmanager/dashboard" element={<ProjectManagerDashboard />} />
+            <Route path="/projectmanager/projects" element={<ProjectsM />} />
+            <Route path="/projectmanager/projects/new" element={<NewProject />} />
+            <Route path="/projectmanager/tasks-tracking" element={<ProjeectTasks />} />
+            <Route path="/projectmanager/performance" element={<ProjectPerformance />} />
+            <Route path="/projectmanager/budget" element={<BudgetFinance />} />
+            <Route path="/projectmanager/reports" element={<ProjectReports />} />
+            <Route path="/projectmanager/events" element={<EventsMeetings />} />
+            <Route path="/projectmanager/risk" element={<Risk />} />
+            <Route path="/projectmanager/profile" element={<ProjectProfile />} />
+            <Route path="/projectmanager/settings" element={<ProjectSettings />} />
+          </Route>
+
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />
           </Routes>
