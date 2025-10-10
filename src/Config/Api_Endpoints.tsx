@@ -12,7 +12,20 @@ export const getApiUrl = (path) => {
 
 export const Api_EndPoints = {
   LOGIN: getApiUrl('/auth/login'),
-  PROFILE_API: getApiUrl('employees/getMyProfile')
+  PROFILE_API: getApiUrl('employees/getMyProfile'),
+  CREATEEMPLOYEE_API: getApiUrl('/employees/createEmp'),
+  UPDATEEMPLOYEE_API: getApiUrl('/employees'),
+  DELETEEMPLOYEE_API: getApiUrl('/employees'),
+  EMPLOYEES_API: getApiUrl('/employees/getAll'),
+  EMPLOYEMENTTYPES_API: getApiUrl('/enums/employment_type'),
+  DEPARTMENTS_API: getApiUrl('/department/get_dept'),
+  DESIGNATION_API: getApiUrl('/designation/getDesg'),
+  ROLES_API: getApiUrl('/roles/get_Roles'),
+  BRANCHES_API: getApiUrl('/branches/getAllBranches'),
+  WORKSHIFT_API: getApiUrl('/enums/work_shift'),
+  MARRIAGESTATUS_API: getApiUrl('/enums/marriageStatus'),
+  BLOODGROUP_API: getApiUrl('/enums/blood_group'),
+  GENDER_API: getApiUrl('/enums/gender')
  
 };
 

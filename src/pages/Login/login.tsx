@@ -10,6 +10,7 @@ export const Roles = {
   BranchManager: "Branch Manager",
   Director: "Director",
   GeneralManager: "General Manager",
+  HRManager: "HR Manager",
   ProductManager: "Product Manager",
   OperationsManager: "Operations Manager",
   Employee: "Employee",
@@ -23,6 +24,7 @@ export const roleRoutes: Record<string, string> = {
   [Roles.CEO]: "/dashboard",
   [Roles.BranchManager]: "/dashboardBR",
   [Roles.GeneralManager]: "/gm/dashboard",
+  [Roles.HRManager]: "/HRdashboard",
   [Roles.Director]: "/overview",
   [Roles.ProductManager]: "/products",
   [Roles.OperationsManager]: "/",
@@ -68,6 +70,7 @@ export default function Login() {
       const decoded = JSON.parse(atob(token.split(".")[1]));
       const role = decoded.role;
       console.log("User role:", role);
+         console.log(decoded);
 
       navigate(roleRoutes[role] || "/login", { replace: true });
       setSuccess("Login successful!");

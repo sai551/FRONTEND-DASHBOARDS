@@ -170,6 +170,18 @@ import EventsMeetings from "./pages/ProjectManager/EventsMeeting";
 import Risk from "./pages/ProjectManager/Risk";
 import ProjectProfile from "./pages/ProjectManager/Profile";
 import ProjectSettings from "./pages/ProjectManager/Settings";
+import { HRDashboardLayout } from "./components/HRDashboard/Layout/Layout";
+import HRDashboard from "./components/HRDashboard/Layout/Dashboard";
+import CompanyPerformance from "./pages/HRPages/CompanyPerformance";
+import DocumentVerification from "./pages/HRPages/DocumentVerification";
+import EmployeeTransitions from "./pages/HRPages/EmployeeTransitions";
+import OperationsAssetRequests from "./pages/HRPages/OperationsAssetRequests";
+import EmployeeAssetRequests from "./pages/HRPages/EmployeeAssetRequests";
+import AddEmployee from "./pages/HRPages/AddEmployee";
+import JobOpeningsPage from "./pages/HRPages/JobOpening";
+import Applicant from "./pages/HRPages/Applicant";
+import AddApplicant from "./pages/HRPages/AddApplicant";
+import Interview from "./pages/HRPages/Interview";
 
 const queryClient = new QueryClient();
 
@@ -206,7 +218,7 @@ export default function App() {
               <Route path="/performances" element={<Performance />} />
               <Route path="/employee" element={<Employee />} />
 
-               <Route path="/ceo/profile" element={<MyProfilePage />} />
+              <Route path="/ceo/profile" element={<MyProfilePage />} />
               <Route path="/ceo/editprofile" element={<EditProfile employeeId={""} />} />
               <Route path="/performances" element={<Performance />} />
               <Route
@@ -216,7 +228,10 @@ export default function App() {
             </Route>
 
 
-                         {/* Branch Manager Routes */} 
+             
+
+
+            {/* Branch Manager Routes */} 
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.BranchManager]}>
@@ -256,7 +271,51 @@ export default function App() {
 
 
 
-                       {/* Product routes */}
+           
+            {/* HRManager Routes */}
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={[Roles.HRManager]}>
+                  <HRDashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+                <Route path="/HRdashboard" element={<HRDashboard />} />
+                <Route path="/companyperformance" element={<CompanyPerformance />} />
+            
+            <Route path="/recruitment/document-verification" element={<DocumentVerification />} />
+            <Route path="/emp-performance" element={<EmployeePerformance />} />
+            <Route path="/employees/transitions" element={<EmployeeTransitions />} />
+            <Route path="/employees/operation/asset-request" element={<OperationsAssetRequests />} />
+            <Route path="/employees/asset-requests" element={<EmployeeAssetRequests />} />
+            <Route path="/employees" element={<Employees />} />
+            <Route path="/employees/add" element={<AddEmployee />} />
+
+            {/* <Route path="/projectstatus" element={<ProjectStatus />} /> */}
+            <Route path="/payroll" element={<Payroll />} />
+            <Route path="/attendance" element={<Attendance />} />
+            <Route path="/recruitment/jobs" element={<JobOpeningsPage />} />
+            <Route path="/recruitment/applicants" element={<Applicant />} />
+            <Route path="/recruitment/addapplicant" element={<AddApplicant />} />
+            <Route path="/recruitment/interview" element={<Interview />} />
+
+            <Route path="/tasks" element={<Tasks />} />
+
+            <Route path="/exportdata" element={<ExportData />} />
+            <Route path="/profile" element={<MyProfilePage />} />
+            <Route path="/emp/editprofile" element={<EditProfile employeeId={""} />} />
+            
+            <Route path="/reports" element={<Reports />} />
+
+            <Route path="/assetmanagement" element={<AssetManagement />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<NotFound />} />
+
+            </Route>
+
+
+
+            {/* Product routes */}
             <Route
               element={
                 <ProtectedRoute allowedRoles={[Roles.ProductManager]}>
