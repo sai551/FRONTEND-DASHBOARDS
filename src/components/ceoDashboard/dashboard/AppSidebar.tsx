@@ -37,7 +37,7 @@ const navigationItems = [
     // url: "/employees",
     icon: Users,
     children: [
-      { title: "Add New Employee", url: "/register", icon: Plus },
+      { title: "Add New Employee", url: "/employee", icon: Plus },
       { title: "Employee List", url: "/employees/list", icon: Users },
     ],
   },
