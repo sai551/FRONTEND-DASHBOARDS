@@ -1,4 +1,4 @@
-import { Bell, Settings, LogOut, Search } from "lucide-react";
+import { Bell, Settings, LogOut, Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ceoProfile from "@/assets/ceo-profile.jpg";
+import { Api_EndPoints, FrontendRoutes } from "@/Config/Api_Endpoints";
 
 export function DashboardHeader() {
   const navigate = useNavigate();
@@ -135,21 +136,33 @@ export function DashboardHeader() {
                 </div>
               </Button>
             </DropdownMenuTrigger>
+
             <DropdownMenuContent align="end" className="w-56">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                Settings
+              <DropdownMenuItem
+                onClick={() => navigate(FrontendRoutes.PROFILE)}
+                className="hover:bg-[#670D2F] focus:bg-orange-600/20 active:bg-orange-600/20 text-black transition-colors"
+              >
+                <User className="mr-2 h-4 w-4 cursor-pointer" />
+                <span className="cursor-pointer">View Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => navigate("/settings")}
+                className="hover:bg-[#670D2F] focus:bg-[#670D2F] active:bg-[#670D2F] text-black transition-colors"
+              >
+                <Settings className="mr-2 h-4 w-4 cursor-pointer" />
+                <span className="cursor-pointer">Settings</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
                   localStorage.removeItem("token");
                   navigate("/login");
                 }}
+                className="hover:bg-red-600 focus:bg-red-700 active:bg-red-700 text-red-500 transition-colors"
               >
-                <LogOut className="mr-2 h-4 w-4" />
-                Log out
+                <LogOut className="mr-2 h-4 w-4 cursor-pointer" />
+                <span className="cursor-pointer">Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
