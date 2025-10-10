@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Plus, ArrowUp, ArrowDown, Minus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   Dialog,
@@ -18,8 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Plus, ArrowUp, ArrowDown, Minus } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 interface Feature {
   id?: number;
@@ -27,8 +27,8 @@ interface Feature {
   description: string;
   priority: "High" | "Medium" | "Low" | "";
   status: string;
-  assigneeId: string;
-  assigneeName?: string;
+  assigneeId: string; // ✅ camelCase
+  assigneeName?: string; // ✅ for display
   productId?: number;
 }
 
@@ -61,18 +61,16 @@ export default function Features() {
   const [products, setProducts] = useState<Product[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
-  const [formLoading, setFormLoading] = useState(false);
+  const [error, setError] = useState("");
   const [openForm, setOpenForm] = useState(false);
-  const [expandedFeatureId, setExpandedFeatureId] = useState<number | null>(
-    null
-  );
+  const [formLoading, setFormLoading] = useState(false);
 
   const [newFeature, setNewFeature] = useState<Feature>({
     title: "",
     description: "",
     priority: "",
     status: "",
-    assigneeId: "",
+    assigneeId: "", // ✅ updated
     productId: undefined,
   });
 
@@ -81,6 +79,7 @@ export default function Features() {
     return { headers: { Authorization: `Bearer ${token}` } };
   };
 
+  // Fetch features + products
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -95,15 +94,18 @@ export default function Features() {
           title: f.title,
           description: f.description,
           status: f.status,
+          priority: f.priority || "",
           assigneeId: f.assigneeId || "",
-          assigneeName: f.assigneeName || "Unassigned",
+          assigneeName: f.assigneeName || "Unassigned", // ✅ prefer backend name
+          votes: f.votes || 0,
+          effort: f.effort || "",
           productId: f.productId,
         }));
 
         setFeatures(mappedFeatures);
         setProducts(prodRes.data || []);
       } catch (err) {
-        console.error("Failed to fetch features/products", err);
+        setError("Failed to load features or products");
       } finally {
         setLoading(false);
       }
@@ -112,6 +114,7 @@ export default function Features() {
     fetchData();
   }, []);
 
+  // Fetch team members when product is selected
   const fetchTeamMembers = async (productId: number) => {
     try {
       const res = await axios.get(
@@ -132,10 +135,22 @@ export default function Features() {
   };
 
   const handleCreateFeature = async () => {
-    if (!newFeature.productId) return alert("Please select a product!");
-    if (!newFeature.assigneeId) return alert("Please select an assignee!");
-    if (!newFeature.priority) return alert("Please select a priority!");
-    if (!newFeature.status) return alert("Please select a status!");
+    if (!newFeature.productId) {
+      alert("Please select a product!");
+      return;
+    }
+    if (!newFeature.assigneeId) {
+      alert("Please select an assignee!");
+      return;
+    }
+    if (!newFeature.priority) {
+      alert("Please select a priority!");
+      return;
+    }
+    if (!newFeature.status) {
+      alert("Please select a status!");
+      return;
+    }
 
     try {
       setFormLoading(true);
@@ -145,19 +160,22 @@ export default function Features() {
         getHeadAuth()
       );
 
+      // Map assigneeId -> name
       const assigneeName =
         teamMembers.find((m) => m.id === newFeature.assigneeId)?.name ||
         "Unassigned";
 
       const createdFeature: Feature = {
         ...res.data,
-        assigneeName,
+        assigneeName, // ✅ store name
         priority: newFeature.priority,
         status: newFeature.status,
       };
 
+      // Update cards immediately
       setFeatures((prev) => [...prev, createdFeature]);
 
+      // Reset form
       setOpenForm(false);
       setNewFeature({
         title: "",
@@ -175,9 +193,8 @@ export default function Features() {
     }
   };
 
-  const SkeletonCard = () => (
-    <div className="animate-pulse bg-gray-200 dark:bg-gray-700 rounded-xl p-5 h-48"></div>
-  );
+  if (loading) return <p className="text-gray-700">Loading features...</p>;
+  if (error) return <p className="text-red-600">{error}</p>;
 
   return (
     <div className="space-y-6">
@@ -201,97 +218,65 @@ export default function Features() {
       </div>
 
       {/* Features Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {loading
-          ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
-          : features.map((feature) => {
-              const PriorityIcon = getPriorityIcon(feature.priority);
-              const isExpanded = expandedFeatureId === feature.id;
-
-              return (
-                <motion.div
-                  key={feature.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-5 hover:scale-[1.02] transition-transform duration-300"
-                >
-                  {/* Card Header */}
-                  <div className="flex justify-between items-center mb-3">
-                    <div className="flex items-center space-x-2">
-                      <PriorityIcon
-                        className={`h-5 w-5 ${getPriorityColor(
-                          feature.priority
-                        )} transition-transform duration-300 hover:scale-125`}
-                      />
-                      <h3 className="text-gray-900 dark:text-gray-100 font-semibold">
-                        {feature.title}
-                      </h3>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className="text-xs text-purple-900 border-purple-300 px-2 py-1 rounded transition-all duration-300 hover:bg-purple-100 dark:hover:bg-purple-900 dark:hover:text-white"
-                    >
-                      {feature.status}
-                    </Badge>
-                  </div>
-
-                  {/* Description Preview */}
-                  <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
-                      <span className="font-medium">Description: </span>
-                    {feature.description}
-                  </p>
-
-                  {/* Footer */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="text-sm text-gray-700 dark:text-gray-200">
-                      <span className="font-medium">Assignee: </span>
-                      {feature.assigneeName || "Unassigned"}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        setExpandedFeatureId(
-                          isExpanded ? null : feature.id || null
-                        )
-                      }
-                      className="w-full sm:w-auto border-purple-300 text-purple-900 hover:bg-purple-700 hover:text-white transition-colors"
-                    >
-                      {isExpanded ? "Hide Details" : "View Details"}
-                    </Button>
-                  </div>
-
-                  {/* Animated Details */}
-                  <AnimatePresence>
-                    {isExpanded && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3 }}
-                        className="overflow-hidden mt-4 text-sm text-gray-700 dark:text-gray-300 space-y-2"
-                      >
-                        <div>
-                          <span className="font-medium">Priority: </span>
-                          {feature.priority}
-                        </div>
-                        <div>
-                          <span className="font-medium">Status: </span>
+      <div className="grid gap-4">
+        {features.map((feature) => {
+          const PriorityIcon = getPriorityIcon(feature.priority);
+          return (
+            <Card
+              key={feature.id}
+              className="transition-all duration-300 hover:shadow-lg hover:scale-[1.01] shadow-md border border-gray-200 hover:bg-[#E6E6FA]"
+            >
+              <CardHeader className="pb-3">
+                <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                      <div className="flex items-center space-x-2">
+                        <PriorityIcon
+                          className={`h-5 w-5 ${getPriorityColor(
+                            feature.priority
+                          )}`}
+                        />
+                        <CardTitle className="text-base md:text-lg text-gray-800">
+                          {feature.title}
+                        </CardTitle>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge
+                          variant="outline"
+                          className="text-xs text-purple-900 border-purple-300"
+                        >
                           {feature.status}
-                        </div>
-                        <div>
-                          <span className="font-medium">Product: </span>
-                          {products.find((p) => p.id === feature.productId)
-                            ?.name || "Unknown"}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
+                        </Badge>
+                      </div>
+                    </div>
+                    <p className="text-sm md:text-base text-gray-600">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-500">Assignee: </span>
+                      <span className="font-medium text-gray-800">
+                        {feature.assigneeName || "Unassigned"}
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full sm:w-auto transition-colors border-purple-300 text-purple-900 hover:bg-[#8A2BE2] hover:text-white"
+                  >
+                    View Details
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* New Feature Form */}
@@ -304,6 +289,7 @@ export default function Features() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
+            {/* Product Select */}
             <Select
               value={newFeature.productId?.toString() || ""}
               onValueChange={(v) => {
@@ -330,6 +316,7 @@ export default function Features() {
               </SelectContent>
             </Select>
 
+            {/* Title */}
             <Input
               placeholder="Title"
               value={newFeature.title}
@@ -338,6 +325,7 @@ export default function Features() {
               }
             />
 
+            {/* Description */}
             <Input
               placeholder="Description"
               value={newFeature.description}
@@ -349,6 +337,7 @@ export default function Features() {
               }
             />
 
+            {/* Priority */}
             <Select
               value={newFeature.priority}
               onValueChange={(v) =>
@@ -368,6 +357,7 @@ export default function Features() {
               </SelectContent>
             </Select>
 
+            {/* Status */}
             <Select
               value={newFeature.status}
               onValueChange={(v) =>
@@ -384,6 +374,7 @@ export default function Features() {
               </SelectContent>
             </Select>
 
+            {/* Assignee */}
             <Select
               value={newFeature.assigneeId}
               onValueChange={(v) =>
