@@ -127,6 +127,9 @@ import OmFacilityBooking from "./pages/OperationalManager/FacilityBooking";
 import OmTransportSchedules from "./pages/OperationalManager/TransportSchedules";
 import OtpVerification from "./pages/Login/otpPage";
 import ResetPassword from "./pages/Login/resetPassword";
+import EditProfile from "./pages/ceo/EditProfile";
+import MyProfilePage from "./pages/ceo/MyProfilePage";
+import Employee from "./pages/ceo/Employee";
 // Trainee Dashboard
 import TraineeDashboard from "./components/Trainne/Layout/Dashboard";
 import TraineeAssignments from "./pages/Trainne/Assignments";
@@ -200,6 +203,11 @@ export default function App() {
             >
               <Route path="/dashboard" element={<DashboardMain />} />
               <Route path="/department" element={<Departments />} />
+              <Route path="/performances" element={<Performance />} />
+              <Route path="/employee" element={<Employee />} />
+
+               <Route path="/ceo/profile" element={<MyProfilePage />} />
+              <Route path="/ceo/editprofile" element={<EditProfile employeeId={""} />} />
               <Route path="/performances" element={<Performance />} />
               <Route
                 path="/financial-overview"

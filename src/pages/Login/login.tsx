@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { Api_EndPoints } from "@/Config/Api_Endpoints";
 
 // ✅ Roles & Role → Dashboard mapping
 export const Roles = {
@@ -56,7 +57,7 @@ export default function Login() {
     setSuccess("");
 
     try {
-      const response = await axios.post("http://localhost:3000/auth/login", {
+      const response = await axios.post(Api_EndPoints.LOGIN, {
         email,
         password,
       });
