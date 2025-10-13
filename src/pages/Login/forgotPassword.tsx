@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Api_EndPoints } from "@/Config/Api_Endpoints";
 
 export default function ForgotPassword() {
   const [method, setMethod] = useState<"email" | "otp">("email");
@@ -12,23 +14,20 @@ export default function ForgotPassword() {
 
     if (method === "email") {
       try {
-        const res = await fetch("http://localhost:3000/auth/forgot-password", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        });
-        const data = await res.json();
-        if (res.ok) {
-          alert("Reset link sent. Check your email.");
-        } else {
-          alert(data.message || "Something went wrong");
-        }
-      } catch (err) {
-        alert("Error sending reset link");
+        const res = await axios.post(Api_EndPoints.FORGOT_PASSWORD, { email });
+        alert("Reset link sent. Check your email.");
+      } catch (err: any) {
+        alert(err.response?.data?.message || "Error sending reset link");
       }
     } else {
-      // Navigate to OTP screen with email
-      navigate("/otp-verification", { state: { email } });
+      // Send OTP to email first
+      try {
+        const res = await axios.post(Api_EndPoints.SEND_OTP, { email });
+        alert("OTP sent to your email. Please check your inbox.");
+        navigate("/otp-verification", { state: { email } });
+      } catch (err: any) {
+        alert(err.response?.data?.message || "Error sending OTP");
+      }
     }
   };
 

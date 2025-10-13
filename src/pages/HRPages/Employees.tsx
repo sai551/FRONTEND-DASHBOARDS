@@ -85,7 +85,7 @@ interface Employee {
 // ----------------------------
 // Component
 // ----------------------------
-const Employees = () => {
+const Employeess = () => {
   const { toast } = useToast();
 
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -421,4 +421,4 @@ const Employees = () => {
   );
 };
 
-export default Employees;
+export default Employeess;

@@ -17,7 +17,8 @@ export const Roles = {
   TeamLead: "Team Lead",
   Intern: "Intern",
   Trainer: "Trainer",
-  Trainee: "Trainee"
+  Trainee: "Trainee",
+  ProjectManager: "Project Manager"
 };
 
 export const roleRoutes: Record<string, string> = {
@@ -27,10 +28,13 @@ export const roleRoutes: Record<string, string> = {
   [Roles.HRManager]: "/HRdashboard",
   [Roles.Director]: "/overview",
   [Roles.ProductManager]: "/products",
-  [Roles.OperationsManager]: "/",
+  [Roles.OperationsManager]: "/operations/dashboard",
   [Roles.TeamLead]: "/teamleaddashboard",
   [Roles.Employee]: "/emp/dashboard",
-  [Roles.Intern]: "/InternDashboard"
+  [Roles.Intern]: "/interndashboard",
+  [Roles.Trainer]: "/trainer/dashboard",
+  [Roles.Trainee]: "/traineedashboard",
+  [Roles.ProjectManager]: "/projectmanager/dashboard"
 };
 
 export default function Login() {

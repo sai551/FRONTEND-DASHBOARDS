@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Api_EndPoints } from "@/Config/Api_Endpoints";
 
 export default function OtpVerification() {
   const location = useLocation();
@@ -37,7 +38,7 @@ export default function OtpVerification() {
     setTimer(30);
 
     try {
-      const res = await axios.post("http://localhost:3000/auth/reset-password-otp", {
+      const res = await axios.post(Api_EndPoints.RESET_PASSWORD_OTP, {
         email,
         otp,
         newPassword,
