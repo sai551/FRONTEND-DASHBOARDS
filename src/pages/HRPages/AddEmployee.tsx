@@ -1,5 +1,3 @@
-
-
 import api from "@/lib/axios";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -11,14 +9,14 @@ function AddEmployee() {
     email: "",
     phone: "",
     passwordHash: "",
-    role: "",
-    department: "",
-    designation: "",
-    branch: "",
+    roleId: "",
+    departmentId: "",
+    designationId: "",
+    branchId: "",
     dob: "",
     doj: "",
     employmentType: "",
-    workshift: "",
+    workShift: "",
     address: "",
     city: "",
     state: "",
@@ -62,11 +60,11 @@ function AddEmployee() {
   const [departments, setDepartments] = useState<{ id: number; name: string }[]>([]);
   const [designations, setDesignations] = useState<{ id: number; title: string }[]>([]);
   const [branches, setBranches] = useState<{ id: number; name: string }[]>([]);
-  const [employmentTypes, setEmploymentTypes] = useState<{ id: number; name: string }[]>([]);
-  const [marritalStatus, setmarritalStatus] = useState<{ id: number; name: string }[]>([]);
-  const [genders, setgenders] = useState<{ id: number; name: string }[]>([]);
-  const [bloodGroups, setbloodGroups] = useState<{ id: number; name: string }[]>([]);
-  const [workshifts, setWorkshifts] = useState<{ id: number; name: string }[]>([]);
+  const [employmentTypes, setEmploymentTypes] = useState<{ name: string }[]>([]);
+  const [marritalStatus, setmarritalStatus] = useState<{ name: string }[]>([]);
+  const [genders, setgenders] = useState<{ name: string }[]>([]);
+  const [bloodGroups, setbloodGroups] = useState<{ name: string }[]>([]);
+  const [workshifts, setWorkshifts] = useState<{ name: string }[]>([]);
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem("token") || "";
@@ -105,43 +103,48 @@ function AddEmployee() {
       .then((res) => setBranches(res.data.map((b: any) => ({ id: b.branchId, name: b.name }))))
       .catch(() => setBranches([{ id: 1, name: "Main Branch" }]));
 
-    axios
-      .get("http://localhost:3000/enums/employment_type", getAuthHeaders())
+    // ENUMs
+    axios.get("http://localhost:3000/enums/employment_type", getAuthHeaders())
       .then((res) => setEmploymentTypes(res.data))
-      .catch(() => setEmploymentTypes([{ id: 1, name: "Full-time" }]));
+      .catch(() => setEmploymentTypes([{ name: "FULL_TIME" }]));
 
-    axios
-      .get("http://localhost:3000/enums/work_shift", getAuthHeaders())
+    axios.get("http://localhost:3000/enums/work_shift", getAuthHeaders())
       .then((res) => setWorkshifts(res.data))
-      .catch(() => setWorkshifts([{ id: 1, name: "Morning" }]));
+      .catch(() => setWorkshifts([{ name: "DAY" }]));
 
-    axios
-      .get("http://localhost:3000/enums/marriageStatus", getAuthHeaders())
+    axios.get("http://localhost:3000/enums/marriageStatus", getAuthHeaders())
       .then((res) => setmarritalStatus(res.data))
-      .catch(() => setmarritalStatus([{ id: 1, name: "Unmarried" }]));
+      .catch(() => setmarritalStatus([{ name: "UNMARRIED" }]));
 
-    axios
-      .get("http://localhost:3000/enums/blood_group", getAuthHeaders())
+    axios.get("http://localhost:3000/enums/blood_group", getAuthHeaders())
       .then((res) => setbloodGroups(res.data))
-      .catch(() => setbloodGroups([{ id: 1, name: "O+" }]));
+      .catch(() => setbloodGroups([{ name: "O+" }]));
 
-    axios
-      .get("http://localhost:3000/enums/gender", getAuthHeaders())
+    axios.get("http://localhost:3000/enums/gender", getAuthHeaders())
       .then((res) => setgenders(res.data))
-      .catch(() => setgenders([{ id: 1, name: "Male" }]));
+      .catch(() => setgenders([{ name: "MALE" }]));
   }, []);
 
   const handleAddEmployee = async (e: any) => {
     e.preventDefault();
-    if (!form.firstName || !form.lastName || !form.email || !form.role) {
+    if (!form.firstName || !form.lastName || !form.email || !form.roleId) {
       return alert("Please fill all required fields!");
     }
+
     try {
-      await api.post("/employees/createEmp", form, getAuthHeaders());
+      const payload = {
+        ...form,
+        roleId: Number(form.roleId),
+        departmentId: Number(form.departmentId),
+        designationId: Number(form.designationId),
+        branchId: Number(form.branchId),
+      };
+
+      await api.post("/employees/createEmp", payload, getAuthHeaders());
       resetForm();
       fetchEmployees();
     } catch (err) {
-      console.error(err);
+      console.error("Error in registering Employee:", err);
     }
   };
 
@@ -149,7 +152,15 @@ function AddEmployee() {
     e.preventDefault();
     if (!selectedEmployee) return;
     try {
-      await api.put(`/employees/${selectedEmployee.id}`, form, getAuthHeaders());
+      const payload = {
+        ...form,
+        roleId: Number(form.roleId),
+        departmentId: Number(form.departmentId),
+        designationId: Number(form.designationId),
+        branchId: Number(form.branchId),
+      };
+
+      await api.put(`/employees/${selectedEmployee.id}`, payload, getAuthHeaders());
       resetForm();
       fetchEmployees();
     } catch (err) {
@@ -169,7 +180,13 @@ function AddEmployee() {
 
   const handleEdit = (emp: any) => {
     setSelectedEmployee(emp);
-    setForm(emp);
+    setForm({
+      ...emp,
+      roleId: emp.roleId?.toString() || "",
+      departmentId: emp.departmentId?.toString() || "",
+      designationId: emp.designationId?.toString() || "",
+      branchId: emp.branchId?.toString() || "",
+    });
     setIsEditMode(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -182,55 +199,20 @@ function AddEmployee() {
     setIsEditMode(false);
   };
 
-  const fieldPlaceholders: Record<string, string> = {
-    firstName: "e.g., Mahesh",
-    lastName: "e.g., Erukulla",
-    email: "e.g., camelq@gmail.com",
-    phone: "e.g., 9876543210",
-    passwordHash: "e.g., ********",
-    address: "e.g., 123 Street Name",
-    city: "e.g., Hyderabad",
-    state: "e.g., Telangana",
-    country: "e.g., India",
-    pincode: "e.g., 500081",
-    aadhaarNumber: "e.g., 1234 5678 9012",
-    panNumber: "e.g., ABCDE1234F",
-    licenseNumber: "e.g., TS14 20201234567",
-    passportNumber: "e.g., N1234567",
-    bank_name: "e.g., SBI",
-    accountNumber: "e.g., 123456789012",
-    ifsc_code: "e.g., SBIN0000123",
-    branch_name: "e.g., Main Branch",
-    emergency_contact_name: "e.g., Ramesh Kumar",
-    emergency_contact_relation: "e.g., Father",
-    emergency_contact_number: "e.g., 9876543210",
-    Specification: "e.g., Computer Science",
-    stream: "e.g., Engineering",
-    institution: "e.g., IIIT DELHI",
-    yearOfPassing: "e.g., 2022",
-    CGPA: "e.g., 8.5",
-    previouscompanyName: "e.g., CamelQ Software Solutions Pvt Ltd.",
-    previousdesignation: "e.g., Software Engineer",
-    experienceYears: "e.g., 2",
-    responsibilities: "e.g., API Development",
-    skillsUsed: "e.g., React, NestJS, PostgreSQL",
-  };
-
   const fieldLabels: Record<string, string> = {
-    ...Object.keys(initialFormState).reduce((acc, key) => ({ ...acc, [key]: key }), {}),
     firstName: "First Name",
     lastName: "Last Name",
     email: "Email",
     phone: "Phone Number",
     passwordHash: "Password",
-    role: "Role",
-    department: "Department",
-    designation: "Designation",
-    branch: "Branch",
+    roleId: "Role",
+    departmentId: "Department",
+    designationId: "Designation",
+    branchId: "Branch",
     dob: "Date of Birth",
     doj: "Date of Joining",
     employmentType: "Employment Type",
-    workshift: "Work Shift",
+    workShift: "Work Shift",
     address: "Address",
     city: "City",
     state: "State",
@@ -246,7 +228,7 @@ function AddEmployee() {
     bank_name: "Bank Name",
     accountNumber: "Account Number",
     ifsc_code: "IFSC Code",
-    branch_name: "Branch Name",
+    branch_name: "Bank Branch Name",
     emergency_contact_name: "Emergency Contact Name",
     emergency_contact_relation: "Emergency Contact Relation",
     emergency_contact_number: "Emergency Contact Number",
@@ -264,8 +246,8 @@ function AddEmployee() {
     skillsUsed: "Skills Used",
   };
 
+  // ✅ RENDER INPUT FIELD
   const renderInputField = (key: string) => {
-    const placeholder = fieldPlaceholders[key] || `Enter ${fieldLabels[key] || key}`;
     if (["dob", "doj", "startDate", "endDate"].includes(key)) {
       return (
         <input
@@ -276,11 +258,18 @@ function AddEmployee() {
         />
       );
     }
-    if (
-      ["role", "department", "designation", "branch", "employmentType", "workshift", "marrital_status", "bloodGroup", "gender"].includes(
-        key
-      )
-    )
+
+    // 🔹 Foreign Key dropdowns (IDs)
+    if (["roleId", "departmentId", "designationId", "branchId"].includes(key)) {
+      const options =
+        key === "roleId"
+          ? roles
+          : key === "departmentId"
+          ? departments
+          : key === "designationId"
+          ? designations
+          : branches;
+
       return (
         <select
           value={form[key]}
@@ -288,26 +277,48 @@ function AddEmployee() {
           className="p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="">Select {fieldLabels[key]}</option>
-          {(key === "role" ? roles :
-            key === "department" ? departments :
-            key === "designation" ? designations :
-            key === "branch" ? branches :
-            key === "employmentType" ? employmentTypes :
-            key === "workshift" ? workshifts :
-            key === "marrital_status" ? marritalStatus :
-            key === "bloodGroup" ? bloodGroups :
-            genders
-          ).map((item: any) => (
-            <option key={item.id} value={item.name || item.title}>
+          {options.map((item: any) => (
+            <option key={item.id} value={item.id}>
               {item.name || item.title}
             </option>
           ))}
         </select>
       );
+    }
 
+    // 🔹 ENUM dropdowns (String values)
+    if (["employmentType", "workShift", "marrital_status", "bloodGroup", "gender"].includes(key)) {
+      const options =
+        key === "employmentType"
+          ? employmentTypes
+          : key === "workShift"
+          ? workshifts
+          : key === "marrital_status"
+          ? marritalStatus
+          : key === "bloodGroup"
+          ? bloodGroups
+          : genders;
+
+      return (
+        <select
+          value={form[key]}
+          onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+          className="p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">Select {fieldLabels[key]}</option>
+          {options.map((item: any) => (
+            <option key={item.name} value={item.name}>
+              {item.name}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    // Default input
     return (
       <input
-        placeholder={placeholder}
+        placeholder={`Enter ${fieldLabels[key] || key}`}
         value={form[key]}
         onChange={(e) => setForm({ ...form, [key]: e.target.value })}
         className="p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -319,7 +330,7 @@ function AddEmployee() {
     <div className="max-w-6xl mx-auto mt-3 font-sans">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Employees</h1>
 
-      {/* Form */}
+      {/* FORM */}
       <form
         onSubmit={isEditMode ? handleUpdateEmployee : handleAddEmployee}
         className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-gray-100 rounded-lg border border-gray-300 mb-10"
@@ -333,8 +344,9 @@ function AddEmployee() {
         <div className="col-span-1 md:col-span-3 flex gap-2 mt-2">
           <button
             type="submit"
-            className={`flex-1 ${isEditMode ? "bg-yellow-500 hover:bg-yellow-600" : "bg-blue-600 hover:bg-blue-700"
-              } text-white font-bold py-2 px-4 rounded transition`}
+            className={`flex-1 ${
+              isEditMode ? "bg-yellow-500 hover:bg-yellow-600" : "bg-blue-600 hover:bg-blue-700"
+            } text-white font-bold py-2 px-4 rounded transition`}
           >
             {isEditMode ? "Update Employee" : "Add Employee"}
           </button>
@@ -350,13 +362,10 @@ function AddEmployee() {
         </div>
       </form>
 
-      {/* Employee Cards */}
+      {/* EMPLOYEE CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {employees.map((emp) => (
-          <div
-            key={emp.id}
-            className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition flex flex-col"
-          >
+          <div key={emp.id} className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition flex flex-col">
             <div className="mb-2">
               <strong className="text-lg">
                 {emp.firstName} {emp.lastName}
@@ -393,7 +402,7 @@ function AddEmployee() {
         ))}
       </div>
 
-      {/* View Modal */}
+      {/* VIEW MODAL */}
       {viewEmployee && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white w-11/12 md:w-2/3 lg:w-1/2 p-6 rounded-lg shadow-lg overflow-y-auto max-h-[90vh]">

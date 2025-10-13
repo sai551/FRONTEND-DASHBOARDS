@@ -72,14 +72,21 @@ interface Employee {
   employeeId: string;
   firstName: string;
   lastName: string;
-  username: string;
+  username?: string;
   email: string;
   phone: string;
-  roleId: number;
-  departmentId: number;
-  designationId: number;
-  doj: string;
-  status: string;
+  roleId?: number;
+  departmentId?: number;
+  designationId?: number;
+  branchId?: number;
+  doj?: string;
+  status?: string;
+  roleName?: string;
+  departmentName?: string;
+  createdBy?: string;
+  updatedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // ----------------------------
@@ -96,6 +103,8 @@ const Employeess = () => {
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [loading, setLoading] = useState(true);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   // ✅ Auth header helper
   const getAuthHeaders = () => {
@@ -103,27 +112,80 @@ const Employeess = () => {
     return { headers: { Authorization: `Bearer ${token}` } };
   };
 
-  // ✅ Fetch employees, roles, departments
+  // ✅ Fetch employees with pagination
+  const fetchEmployees = async (page: number = 1) => {
+    try {
+      const empRes = await axios.get(
+        `http://localhost:3000/employees/getAll?page=${page}`, 
+        getAuthHeaders()
+      );
+
+      console.log("Employee API Response:", empRes.data);
+      
+      // Handle backend response structure
+      let empData = [];
+      let totalCount = 0;
+      
+      if (empRes.data?.data && Array.isArray(empRes.data.data)) {
+        // Backend returns: { data: [...], pagination: { total, page, limit, totalPages } }
+        empData = empRes.data.data;
+        totalCount = empRes.data.pagination?.total || empData.length;
+      } else if (Array.isArray(empRes.data)) {
+        // Direct array response
+        empData = empRes.data;
+        totalCount = empData.length;
+      } else if (empRes.data?.employees && Array.isArray(empRes.data.employees)) {
+        empData = empRes.data.employees;
+        totalCount = empRes.data.total || empRes.data.count || empData.length;
+      } else if (empRes.data?.result && Array.isArray(empRes.data.result)) {
+        empData = empRes.data.result;
+        totalCount = empRes.data.total || empRes.data.count || empData.length;
+      }
+
+      setEmployees(empData);
+      // Use backend's totalPages if available, otherwise calculate
+      const backendTotalPages = empRes.data?.pagination?.totalPages;
+      setTotalPages(backendTotalPages || Math.ceil(totalCount / 10) || 1);
+      setCurrentPage(page);
+      
+      console.log("Processed employees:", empData);
+    } catch (err) {
+      console.error("Error fetching employees:", err);
+      toast({ 
+        title: "Error", 
+        description: err.response?.data?.message || "Failed to load employees" 
+      });
+    }
+  };
+
+  // ✅ Fetch roles and departments
+  const fetchRolesAndDepartments = async () => {
+    try {
+      const [roleRes, deptRes] = await Promise.all([
+        axios.get("http://localhost:3000/roles/get_Roles", getAuthHeaders()),
+        axios.get("http://localhost:3000/department/get_dept", getAuthHeaders()),
+      ]);
+
+      setRoles(Array.isArray(roleRes.data) ? roleRes.data : []);
+      setDepartments(Array.isArray(deptRes.data) ? deptRes.data : []);
+    } catch (err) {
+      console.error("Error fetching roles/departments:", err);
+      toast({ 
+        title: "Error", 
+        description: "Failed to load roles and departments" 
+      });
+    }
+  };
+
+  // ✅ Initial data fetch
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        const [empRes, roleRes, deptRes] = await Promise.all([
-          axios.get("http://localhost:3000/employees/getAll", getAuthHeaders()),
-          axios.get("http://localhost:3000/roles/get_Roles", getAuthHeaders()),
-          axios.get("http://localhost:3000/department/get_dept", getAuthHeaders()),
+        await Promise.all([
+          fetchEmployees(1),
+          fetchRolesAndDepartments()
         ]);
-
-        // ✅ Handle possible object structure
-        const empData = Array.isArray(empRes.data)
-          ? empRes.data
-          : empRes.data?.data || [];
-
-        setEmployees(empData);
-        setRoles(Array.isArray(roleRes.data) ? roleRes.data : []);
-        setDepartments(Array.isArray(deptRes.data) ? deptRes.data : []);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        toast({ title: "Error", description: "Failed to load employees" });
       } finally {
         setLoading(false);
       }
@@ -138,10 +200,10 @@ const Employeess = () => {
   // ✅ Stats (Safe filtering)
   const totalEmployees = safeEmployees.length;
   const activeEmployees = safeEmployees.filter(
-    (e) => e?.status?.toLowerCase() === "active"
+    (e) => e?.status && e.status.toLowerCase() === "active"
   ).length;
   const inactiveEmployees = safeEmployees.filter(
-    (e) => e?.status?.toLowerCase() === "inactive"
+    (e) => e?.status && e.status.toLowerCase() === "inactive"
   ).length;
   const totalDepartments = departments.length;
 
@@ -160,7 +222,7 @@ const Employeess = () => {
 
     const matchesStatus =
       selectedStatus === "all" ||
-      employee.status?.toLowerCase() === selectedStatus.toLowerCase();
+      (employee.status && employee.status.toLowerCase() === selectedStatus.toLowerCase());
 
     return matchesSearch && matchesDepartment && matchesStatus;
   });
@@ -341,25 +403,23 @@ const Employeess = () => {
                         </div>
                       </TableCell>
                       <TableCell>{employee.phone}</TableCell>
-                      <TableCell>{getRoleName(employee.roleId)}</TableCell>
+                      <TableCell>{employee.roleName || 'N/A'}</TableCell>
                       <TableCell>
-                        <Badge variant="secondary">
-                          {getDepartmentName(employee.departmentId)}
-                        </Badge>
+                        {employee.departmentName || employee.departmentId || 'N/A'}
                       </TableCell>
                       <TableCell>
                         <Badge
                           variant={
-                            employee.status?.toLowerCase() === "active"
+                            employee.status && employee.status.toLowerCase() === "active"
                               ? "default"
                               : "secondary"
                           }
                         >
-                          {employee.status}
+                          {employee.status || 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        {new Date(employee.doj).toLocaleDateString()}
+                        {employee.doj ? new Date(employee.doj).toLocaleDateString() : 'N/A'}
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
@@ -410,11 +470,47 @@ const Employeess = () => {
         </CardContent>
       </Card>
 
+      {/* Pagination Controls */}
+      {totalPages > 1 && (
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-gray-600">
+                Page {currentPage} of {totalPages}
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fetchEmployees(currentPage - 1)}
+                  disabled={currentPage <= 1}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fetchEmployees(currentPage + 1)}
+                  disabled={currentPage >= totalPages}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Add Employee Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent className="bg-white max-w-4xl my-1 max-h-[100vh] overflow-y-auto" id="scrollbar-hide">
           <DialogHeader />
-          <AddEmployee />
+          <AddEmployee 
+            {...({ onEmployeeAdded: () => {
+              setIsAddDialogOpen(false);
+              fetchEmployees(currentPage); // Refresh current page
+            }} as any)}
+          />
         </DialogContent>
       </Dialog>
     </div>
