@@ -170,6 +170,8 @@ import EventsMeetings from "./pages/ProjectManager/EventsMeeting";
 import Risk from "./pages/ProjectManager/Risk";
 import ProjectProfile from "./pages/ProjectManager/Profile";
 import ProjectSettings from "./pages/ProjectManager/Settings";
+
+// HR Manager Dashboard
 import { HRDashboardLayout } from "./components/HRDashboard/Layout/Layout";
 import HRDashboard from "./components/HRDashboard/Layout/Dashboard";
 import CompanyPerformance from "./pages/HRPages/CompanyPerformance";
@@ -182,6 +184,7 @@ import JobOpeningsPage from "./pages/HRPages/JobOpening";
 import Applicant from "./pages/HRPages/Applicant";
 import AddApplicant from "./pages/HRPages/AddApplicant";
 import Interview from "./pages/HRPages/Interview";
+import Employeess from "./pages/HRPages/Employees";
 
 const queryClient = new QueryClient();
 
@@ -288,7 +291,7 @@ export default function App() {
             <Route path="/employees/transitions" element={<EmployeeTransitions />} />
             <Route path="/employees/operation/asset-request" element={<OperationsAssetRequests />} />
             <Route path="/employees/asset-requests" element={<EmployeeAssetRequests />} />
-            <Route path="/employees" element={<Employees />} />
+            <Route path="/employeess" element={<Employeess />} />
             <Route path="/employees/add" element={<AddEmployee />} />
 
             {/* <Route path="/projectstatus" element={<ProjectStatus />} /> */}
@@ -425,16 +428,16 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="dashboard" element={<GmDashboard />} />
-              <Route path="employees" element={<GmEmployees />} />
-              <Route path="departments" element={<GmDepartments />} />
-              <Route path="projects" element={<GmProjects />} />
-              <Route path="tasks" element={<GmTasks />} />
-              <Route path="attendance-leave" element={<GmAttendanceLeave />} />
-              <Route path="reports" element={<GmReports />} />
-              <Route path="assets" element={<GmAssets />} />
-              <Route path="announcements" element={<GmAnnouncements />} />
-              <Route path="settings" element={<GmSettings />} />
+              <Route path="/gm/dashboard" element={<GmDashboard />} />
+              <Route path="/gm/employees" element={<GmEmployees />} />
+              <Route path="/gm/departments" element={<GmDepartments />} />
+              <Route path="/gm/projects" element={<GmProjects />} />
+              <Route path="/gm/tasks" element={<GmTasks />} />
+              <Route path="/gm/attendance-leave" element={<GmAttendanceLeave />} />
+              <Route path="/gm/reports" element={<GmReports />} />
+              <Route path="/gm/assets" element={<GmAssets />} />
+              <Route path="/gm/announcements" element={<GmAnnouncements />} />
+              <Route path="/gm/settings" element={<GmSettings />} />
             </Route>
               
               
@@ -446,25 +449,25 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="/" element={<OmDashboard />} />
-              <Route path="/assets" element={<OmAssets />} />
-              <Route path="/asset-requests" element={<OmAssetRequests />} />
-              <Route path="/expenses" element={<OmExpenses />} />
+              <Route path="/operations/dashboard" element={<OmDashboard />} />
+              <Route path="/operations/assets" element={<OmAssets />} />
+              <Route path="/operations/asset-requests" element={<OmAssetRequests />} />
+              <Route path="/operations/expenses" element={<OmExpenses />} />
               <Route
-                path="/project-resources"
+                path="/operations/project-resources"
                 element={<OmProjectResources />}
               />
-              <Route path="/vendors" element={<OmVendors />} />
-              <Route path="/maintenance-logs" element={<OmMaintenanceLogs />} />
-              <Route path="/approvals" element={<OmApprovals />} />
-              <Route path="/task-operations" element={<OmTaskOperations />} />
+              <Route path="/operations/vendors" element={<OmVendors />} />
+              <Route path="/operations/maintenance-logs" element={<OmMaintenanceLogs />} />
+              <Route path="/operations/approvals" element={<OmApprovals />} />
+              <Route path="/operations/task-operations" element={<OmTaskOperations />} />
               <Route
-                path="/employee-movements"
+                path="/operations/employee-movements"
                 element={<OmEmployeeMovements />}
               />
-              <Route path="/facility-booking" element={<OmFacilityBooking />} />
+              <Route path="/operations/facility-booking" element={<OmFacilityBooking />} />
               <Route
-                path="/transport-schedules"
+                path="/operations/transport-schedules"
                 element={<OmTransportSchedules />}
               />
             </Route>
@@ -512,7 +515,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             >
-              <Route index element={<TrainerDashboard />} />
               <Route path="/trainer/dashboard" element={<TrainerDashboard />} />
               <Route path="/trainer/sessions" element={<TrainingSessions />} />
               <Route path="/trainer/trainees" element={<TraineeManagement />} />
@@ -539,19 +541,25 @@ export default function App() {
             </Route>
 
               {/* Project Manager Routes */}
-          <Route element={<ProjectManagerLayout />}>
-            <Route path="/projectmanager/dashboard" element={<ProjectManagerDashboard />} />
-            <Route path="/projectmanager/projects" element={<ProjectsM />} />
-            <Route path="/projectmanager/projects/new" element={<NewProject />} />
-            <Route path="/projectmanager/tasks-tracking" element={<ProjeectTasks />} />
-            <Route path="/projectmanager/performance" element={<ProjectPerformance />} />
-            <Route path="/projectmanager/budget" element={<BudgetFinance />} />
-            <Route path="/projectmanager/reports" element={<ProjectReports />} />
-            <Route path="/projectmanager/events" element={<EventsMeetings />} />
-            <Route path="/projectmanager/risk" element={<Risk />} />
-            <Route path="/projectmanager/profile" element={<ProjectProfile />} />
-            <Route path="/projectmanager/settings" element={<ProjectSettings />} />
-          </Route>
+            <Route
+              element={
+                <ProtectedRoute allowedRoles={[Roles.ProjectManager]}>
+                  <ProjectManagerLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/projectmanager/dashboard" element={<ProjectManagerDashboard />} />
+              <Route path="/projectmanager/projects" element={<ProjectsM />} />
+              <Route path="/projectmanager/projects/new" element={<NewProject />} />
+              <Route path="/projectmanager/tasks-tracking" element={<ProjeectTasks />} />
+              <Route path="/projectmanager/performance" element={<ProjectPerformance />} />
+              <Route path="/projectmanager/budget" element={<BudgetFinance />} />
+              <Route path="/projectmanager/reports" element={<ProjectReports />} />
+              <Route path="/projectmanager/events" element={<EventsMeetings />} />
+              <Route path="/projectmanager/risk" element={<Risk />} />
+              <Route path="/projectmanager/profile" element={<ProjectProfile />} />
+              <Route path="/projectmanager/settings" element={<ProjectSettings />} />
+            </Route>
 
             {/* Fallback */}
             <Route path="*" element={<NotFound />} />

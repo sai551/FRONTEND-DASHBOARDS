@@ -69,7 +69,7 @@ const navigationItems = [
   },
   {
     title: "Employees",
-    url: "/employees",
+    url: "/employeess",
     icon: Users,
   },
 

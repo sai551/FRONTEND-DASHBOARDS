@@ -12,6 +12,9 @@ export const getApiUrl = (path) => {
 
 export const Api_EndPoints = {
   LOGIN: getApiUrl('/auth/login'),
+  FORGOT_PASSWORD: getApiUrl('/auth/forgot-password'),
+  SEND_OTP: getApiUrl('/auth/send-otp'),
+  RESET_PASSWORD_OTP: getApiUrl('/auth/reset-password-otp'),
   PROFILE_API: getApiUrl('employees/getMyProfile'),
   CREATEEMPLOYEE_API: getApiUrl('/employees/createEmp'),
   UPDATEEMPLOYEE_API: getApiUrl('/employees'),
