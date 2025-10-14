@@ -28,7 +28,10 @@ export const Api_EndPoints = {
   WORKSHIFT_API: getApiUrl('/enums/work_shift'),
   MARRIAGESTATUS_API: getApiUrl('/enums/marriageStatus'),
   BLOODGROUP_API: getApiUrl('/enums/blood_group'),
-  GENDER_API: getApiUrl('/enums/gender')
+  GENDER_API: getApiUrl('/enums/gender'),
+  // Bug Management APIs
+  BUGS_API: getApiUrl('/bugs'),
+  PRODUCTS_API: getApiUrl('/products')
  
 };
 
