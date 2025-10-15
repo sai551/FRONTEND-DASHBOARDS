@@ -17,6 +17,10 @@ import {
   FileCheck,
   Menu,
   Settings,
+  ArrowRightLeft,
+  UserX,
+  Award,
+  Shield,
 } from "lucide-react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -76,7 +80,8 @@ const navigationItems = [
   { title: "Attendance Reports", url: "/attendance", icon: UserCheck },
   { title: "Payroll Management", url: "/payroll", icon: DollarSign },
   { title: "Employee Performance", url: "/emp-performance", icon: TrendingUp },
-  { title: "Employee Transitions", url: "/employees/transitions", icon: Users },
+  { title: "Employee Transitions", url: "/employees/transitions", icon: ArrowRightLeft },
+  { title: "HR Policies", url: "/hr-policies", icon: Shield },
 ];
 
 const quickActions = [

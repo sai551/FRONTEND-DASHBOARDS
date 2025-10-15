@@ -31,7 +31,12 @@ export const Api_EndPoints = {
   GENDER_API: getApiUrl('/enums/gender'),
   // Bug Management APIs
   BUGS_API: getApiUrl('/bugs'),
-  PRODUCTS_API: getApiUrl('/products')
+  PRODUCTS_API: getApiUrl('/products'),
+  // HR Management APIs
+  HR_POLICIES_API: getApiUrl('/hr-policies'),
+  EMPLOYEE_PROMOTIONS_API: getApiUrl('/employee-promotions'),
+  RESIGNATIONS_API: getApiUrl('/resignations'),
+  EMPLOYEE_TRANSFERS_API: getApiUrl('/employee-transfers')
  
 };
 
