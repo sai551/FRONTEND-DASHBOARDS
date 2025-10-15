@@ -185,6 +185,7 @@ import Applicant from "./pages/HRPages/Applicant";
 import AddApplicant from "./pages/HRPages/AddApplicant";
 import Interview from "./pages/HRPages/Interview";
 import Employeess from "./pages/HRPages/Employees";
+import HRPolicies from "./pages/HRPages/HRPolicies";
 
 const queryClient = new QueryClient();
 
@@ -311,6 +312,7 @@ export default function App() {
             <Route path="/reports" element={<Reports />} />
 
             <Route path="/assetmanagement" element={<AssetManagement />} />
+            <Route path="/hr-policies" element={<HRPolicies />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="*" element={<NotFound />} />
 
