@@ -32,6 +32,7 @@ import { useState } from "react";
 const navigationItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Company Performance", url: "/perfomances", icon: TrendingUp },
+  { title: "Customisation", url: "/custom", icon: Building2 },
   { title: "Departments", url: "/department", icon: Building2 },
   { title: "Employee", url: "/employee", icon: Users },
   { title: "Financial Overview", url: "/FinancialOverview", icon: DollarSign },
