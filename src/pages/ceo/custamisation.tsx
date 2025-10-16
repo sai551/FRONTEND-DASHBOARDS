@@ -12,6 +12,7 @@ import {
   CheckCircle,
   AlertCircle
 } from "lucide-react";
+import { Api_EndPoints } from "@/Config/Api_Endpoints";
 
 type FormType = "role" | "designation" | "department" | "branch" | null;
 
@@ -64,7 +65,7 @@ const CustomizationPage: React.FC = () => {
     try {
       if (type === "role") {
         await axios.post(
-          "http://localhost:3000/roles/create_Roles",
+          Api_EndPoints.ROLES_API,
           { name: roleName, description: roleDesc },
           getAuthHeaders()
         );
@@ -75,7 +76,7 @@ const CustomizationPage: React.FC = () => {
 
       if (type === "designation") {
         await axios.post(
-          "http://localhost:3000/designation/create_Designation",
+          Api_EndPoints.DESIGNATION_API,
           { title: designationTitle, description: designationDesc },
           getAuthHeaders()
         );
@@ -86,7 +87,7 @@ const CustomizationPage: React.FC = () => {
 
       if (type === "department") {
         await axios.post(
-          "http://localhost:3000/department/create_dept",
+          Api_EndPoints.DEPARTMENTS_API,
           { name: departmentName, description: departmentDesc },
           getAuthHeaders()
         );
@@ -97,7 +98,7 @@ const CustomizationPage: React.FC = () => {
 
       if (type === "branch") {
         await axios.post(
-          "http://localhost:3000/branches/create_branch",
+          Api_EndPoints.BRANCHES_API,
           branchData,
           getAuthHeaders()
         );
