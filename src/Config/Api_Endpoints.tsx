@@ -20,6 +20,7 @@ export const Api_EndPoints = {
   UPDATEEMPLOYEE_API: getApiUrl('/employees'),
   DELETEEMPLOYEE_API: getApiUrl('/employees'),
   EMPLOYEES_API: getApiUrl('/employees/getAll'),
+  EMPLOYEES_API_CREATE: getApiUrl('/employees/createEmp'),
   EMPLOYEMENTTYPES_API: getApiUrl('/enums/employment_type'),
   DEPARTMENTS_API: getApiUrl('/department/get_dept'),
   DESIGNATION_API: getApiUrl('/designation/getDesg'),

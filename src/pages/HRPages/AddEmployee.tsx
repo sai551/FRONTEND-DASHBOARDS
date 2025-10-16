@@ -72,17 +72,8 @@ function AddEmployee() {
     return { headers: { Authorization: `Bearer ${token}` } };
   };
 
-  const fetchEmployees = async () => {
-    try {
-      const res = await api.get("/employees", getAuthHeaders());
-      setEmployees(res.data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   useEffect(() => {
-    fetchEmployees();
 
     axios
       .get(Api_EndPoints.ROLES_API, getAuthHeaders())
@@ -143,7 +134,6 @@ function AddEmployee() {
 
       await axios.post(Api_EndPoints.CREATEEMPLOYEE_API, payload, getAuthHeaders());
       resetForm();
-      fetchEmployees();
     } catch (err) {
       console.error("Error in registering Employee:", err);
     }
@@ -163,7 +153,6 @@ function AddEmployee() {
 
       await api.put(`/employees/${selectedEmployee.id}`, payload, getAuthHeaders());
       resetForm();
-      fetchEmployees();
     } catch (err) {
       console.error(err);
     }
@@ -173,7 +162,6 @@ function AddEmployee() {
     if (!window.confirm("Are you sure you want to delete this employee?")) return;
     try {
       await api.delete(`/employees/${id}`, getAuthHeaders());
-      fetchEmployees();
     } catch (err) {
       console.error(err);
     }

@@ -46,6 +46,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 import AddEmployee from "../HRPages/AddEmployee";
+import { Api_EndPoints } from "@/Config/Api_Endpoints";
 
 // ----------------------------
 // Interfaces
@@ -104,11 +105,11 @@ const Employee = () => {
     try {
       const [empRes, roleRes, deptRes] = await Promise.all([
         axios.get(
-          `http://localhost:3000/employees/getAll?page=${pageNumber}`,
+          Api_EndPoints.EMPLOYEES_API + `?page=${pageNumber}`,
           getAuthHeaders()
         ),
-        axios.get("http://localhost:3000/roles/get_Roles", getAuthHeaders()),
-        axios.get("http://localhost:3000/department/get_dept", getAuthHeaders()),
+        axios.get(Api_EndPoints.ROLES_API, getAuthHeaders()),
+        axios.get(Api_EndPoints.DEPARTMENTS_API, getAuthHeaders()),
       ]);
 
       const empData = Array.isArray(empRes.data.data)

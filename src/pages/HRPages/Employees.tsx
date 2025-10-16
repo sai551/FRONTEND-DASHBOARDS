@@ -52,6 +52,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AddEmployee from "./AddEmployee";
+import { Api_EndPoints } from "@/Config/Api_Endpoints";
 
 // ----------------------------
 // Interfaces
@@ -116,7 +117,7 @@ const Employeess = () => {
   const fetchEmployees = async (page: number = 1) => {
     try {
       const empRes = await axios.get(
-        `http://localhost:3000/employees/getAll?page=${page}`, 
+        Api_EndPoints.EMPLOYEES_API + `?page=${page}`, 
         getAuthHeaders()
       );
 
@@ -162,8 +163,8 @@ const Employeess = () => {
   const fetchRolesAndDepartments = async () => {
     try {
       const [roleRes, deptRes] = await Promise.all([
-        axios.get("http://localhost:3000/roles/get_Roles", getAuthHeaders()),
-        axios.get("http://localhost:3000/department/get_dept", getAuthHeaders()),
+        axios.get(Api_EndPoints.ROLES_API, getAuthHeaders()),
+        axios.get(Api_EndPoints.DEPARTMENTS_API, getAuthHeaders()),
       ]);
 
       setRoles(Array.isArray(roleRes.data) ? roleRes.data : []);
