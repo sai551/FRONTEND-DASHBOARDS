@@ -186,6 +186,7 @@ import AddApplicant from "./pages/HRPages/AddApplicant";
 import Interview from "./pages/HRPages/Interview";
 import Employeess from "./pages/HRPages/Employees";
 import HRPolicies from "./pages/HRPages/HRPolicies";
+import Recruitment from "./pages/HRPages/Recruitment";
 import CustomizationPage from "./pages/ceo/custamisation";
 
 const queryClient = new QueryClient();
@@ -287,7 +288,7 @@ export default function App() {
             >
                 <Route path="/HRdashboard" element={<HRDashboard />} />
                 <Route path="/companyperformance" element={<CompanyPerformance />} />
-            
+                <Route path="/recruitment" element={<Recruitment />} />
             <Route path="/recruitment/document-verification" element={<DocumentVerification />} />
             <Route path="/emp-performance" element={<EmployeePerformance />} />
             <Route path="/employees/transitions" element={<EmployeeTransitions />} />

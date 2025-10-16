@@ -36,8 +36,16 @@ export const Api_EndPoints = {
   HR_POLICIES_API: getApiUrl('/hr-policies'),
   EMPLOYEE_PROMOTIONS_API: getApiUrl('/employee-promotions'),
   RESIGNATIONS_API: getApiUrl('/resignations'),
-  EMPLOYEE_TRANSFERS_API: getApiUrl('/employee-transfers')
- 
+  EMPLOYEE_TRANSFERS_API: getApiUrl('/employee-transfers'),
+  ROLES_CREATE_API: getApiUrl('/roles/create_Roles'),
+  DEPARTMENTS_CREATE_API: getApiUrl('/department/create_dept'),
+  DESIGNATION_CREATE_API: getApiUrl('/designation/create_Designation'),
+  BRANCHES_CREATE_API: getApiUrl('/branches/create_branch'),
+  EMPLOYEMENTTYPES_CREATE_API: getApiUrl('/enums/employment_type'),
+  WORKSHIFT_CREATE_API: getApiUrl('/enums/work_shift'),
+  MARRIAGESTATUS_CREATE_API: getApiUrl('/enums/marriageStatus'),
+  BLOODGROUP_CREATE_API: getApiUrl('/enums/blood_group'),
+  GENDER_CREATE_API: getApiUrl('/enums/gender'),
 };
 
 export const FrontendRoutes = {

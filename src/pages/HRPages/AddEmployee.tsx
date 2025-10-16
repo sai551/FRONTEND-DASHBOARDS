@@ -1,3 +1,4 @@
+import { Api_EndPoints } from "@/Config/Api_Endpoints";
 import api from "@/lib/axios";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -84,43 +85,43 @@ function AddEmployee() {
     fetchEmployees();
 
     axios
-      .get("http://localhost:3000/roles/get_Roles", getAuthHeaders())
+      .get(Api_EndPoints.ROLES_API, getAuthHeaders())
       .then((res) => setRoles(res.data.map((r: any) => ({ id: r.roleId, name: r.name }))))
       .catch(() => setRoles([{ id: 1, name: "Default Role" }]));
 
     axios
-      .get("http://localhost:3000/department/get_dept", getAuthHeaders())
+      .get(Api_EndPoints.DEPARTMENTS_API, getAuthHeaders())
       .then((res) => setDepartments(res.data.map((d: any) => ({ id: d.departmentId, name: d.name }))))
       .catch(() => setDepartments([{ id: 1, name: "Default Dept" }]));
 
     axios
-      .get("http://localhost:3000/designation/getDesg", getAuthHeaders())
+      .get(Api_EndPoints.DESIGNATION_API, getAuthHeaders())
       .then((res) => setDesignations(res.data.map((desg: any) => ({ id: desg.designationId, title: desg.title }))))
       .catch(() => setDesignations([{ id: 1, title: "Employee" }]));
 
     axios
-      .get("http://localhost:3000/branches/getAllBranches", getAuthHeaders())
+      .get(Api_EndPoints.BRANCHES_API, getAuthHeaders())
       .then((res) => setBranches(res.data.map((b: any) => ({ id: b.branchId, name: b.name }))))
       .catch(() => setBranches([{ id: 1, name: "Main Branch" }]));
 
     // ENUMs
-    axios.get("http://localhost:3000/enums/employment_type", getAuthHeaders())
+    axios.get(Api_EndPoints.EMPLOYEMENTTYPES_API, getAuthHeaders())
       .then((res) => setEmploymentTypes(res.data))
       .catch(() => setEmploymentTypes([{ name: "FULL_TIME" }]));
 
-    axios.get("http://localhost:3000/enums/work_shift", getAuthHeaders())
+    axios.get(Api_EndPoints.WORKSHIFT_API, getAuthHeaders())
       .then((res) => setWorkshifts(res.data))
       .catch(() => setWorkshifts([{ name: "DAY" }]));
 
-    axios.get("http://localhost:3000/enums/marriageStatus", getAuthHeaders())
+    axios.get(Api_EndPoints.MARRIAGESTATUS_API, getAuthHeaders())
       .then((res) => setmarritalStatus(res.data))
       .catch(() => setmarritalStatus([{ name: "UNMARRIED" }]));
 
-    axios.get("http://localhost:3000/enums/blood_group", getAuthHeaders())
+    axios.get(Api_EndPoints.BLOODGROUP_API, getAuthHeaders())
       .then((res) => setbloodGroups(res.data))
       .catch(() => setbloodGroups([{ name: "O+" }]));
 
-    axios.get("http://localhost:3000/enums/gender", getAuthHeaders())
+    axios.get(Api_EndPoints.GENDER_API, getAuthHeaders())
       .then((res) => setgenders(res.data))
       .catch(() => setgenders([{ name: "MALE" }]));
   }, []);
